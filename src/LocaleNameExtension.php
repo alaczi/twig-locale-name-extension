@@ -2,6 +2,7 @@
 
 namespace alaczi\Twig\Extension;
 
+use Symfony\Component\Intl\Data\Provider\LocaleDataProvider;
 use Symfony\Component\Intl\Intl;
 
 /**
@@ -25,6 +26,13 @@ class LocaleNameExtension extends \Twig_Extension
      */
     public function localeNameFilter($locale, $displayLocale = null)
     {
+        $localeBundle =  Intl::getLocaleBundle();
+        if ($localeBundle instanceof LocaleDataProvider) {
+            $aliases = $localeBundle->getAliases();
+            if (isset($aliases[$displayLocale])) {
+                $displayLocale = $aliases[$displayLocale];
+            }
+        }
         $localeName = Intl::getLocaleBundle()->getLocaleName($locale, $displayLocale);
         return $localeName;
     }
